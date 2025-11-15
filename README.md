@@ -1,1 +1,1 @@
-# pirple-the-nodejs-master-class
+# Pirple - The Node.js Master Class
