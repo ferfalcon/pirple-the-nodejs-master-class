@@ -3,16 +3,25 @@ const url = require('url');
 
 const server = http.createServer((req,res) => {
 
-  const parseUrl = url.parse(req.url, true);
+  const parsedUrl = url.parse(req.url, true);
 
-  const path = parseUrl.pathname;
+  const path = parsedUrl.pathname;
   const trimmedPath = path.replace(/^\/+|\/+$/g, '');
+
+  const queryStringObject = parsedUrl.query;
 
   const method = req.method.toLowerCase();
 
   console.log(
-    `Request received on path: '${trimmedPath}' with the method '${method}'`
+    `Request received:\n` +
+    `path: '${trimmedPath}'\n` +
+    `method: '${method}'`
   );
+
+  if (Object.keys(queryStringObject).length) {
+    console.log(`Query string parameters:`);
+    Object.keys(queryStringObject).forEach(key => console.log(`${key}: ${queryStringObject[key]}`));
+  }
 
   res.end('Hi there!\n');
 });
