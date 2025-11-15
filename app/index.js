@@ -4,11 +4,15 @@ const url = require('url');
 const server = http.createServer((req,res) => {
 
   const parseUrl = url.parse(req.url, true);
-  // console.log(parseUrl);
+
   const path = parseUrl.pathname;
-  // console.log(path);
   const trimmedPath = path.replace(/^\/+|\/+$/g, '');
-  console.log(`Request received on path: ${trimmedPath}`);
+
+  const method = req.method.toLowerCase();
+
+  console.log(
+    `Request received on path: '${trimmedPath}' with the method '${method}'`
+  );
 
   res.end('Hi there!\n');
 });
