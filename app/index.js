@@ -12,6 +12,8 @@ const server = http.createServer((req,res) => {
 
   const method = req.method.toLowerCase();
 
+  const headers = req.headers;
+
   console.log(
     `Request received:\n` +
     `path: '${trimmedPath}'\n` +
@@ -21,6 +23,11 @@ const server = http.createServer((req,res) => {
   if (Object.keys(queryStringObject).length) {
     console.log(`Query string parameters:`);
     Object.keys(queryStringObject).forEach(key => console.log(`${key}: ${queryStringObject[key]}`));
+  }
+
+  if (Object.keys(headers).length) {
+    console.log(`Headers:`);
+    Object.keys(headers).forEach(key => console.log(`${key}: ${headers[key]}`))
   }
 
   res.end('Hi there!\n');
