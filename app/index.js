@@ -22,30 +22,43 @@ const server = http.createServer((req,res) => {
   });
   req.on('end', () => {
     buffer += decoder.end();
-  
-    console.log(
-      `Request received:\n` +
-      `path: '${trimmedPath}'\n` +
-      `method: '${method}'`
-    );
-  
-    if (Object.keys(queryStringObject).length) {
-      console.log(`Query string parameters:`);
-      Object.keys(queryStringObject).forEach(key => console.log(`${key}: ${queryStringObject[key]}`));
-    }
-  
-    if (Object.keys(headers).length) {
-      console.log(`Headers:`);
-      Object.keys(headers).forEach(key => console.log(`${key}: ${headers[key]}`));
+
+    const chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
+
+    const data = {
+      'trimmedPath' : trimmedPath,
+      'queryStringObject' : queryStringObject,
+      'method' : method,
+      'headers' : headers,
+      'payload' : buffer
     }
 
-    console.log(buffer);
-  })
-  
+    chosenHandler(data, (statusCode, payload) => {
+      statusCode = typeof(statusCode) === 'number' ? statusCode : 200;
+      payload = typeof(payload) === 'object' ? payload : {};
 
-  res.end('Hi there!\n');
+      const payloadString = JSON.stringify(payload);
+
+      res.writeHead(statusCode);
+      res.end(payloadString);
+    });
+  });
 });
 
 server.listen(3000, () => {
   console.log("Server listening in port 3000");
 })
+
+const handlers = {};
+
+handlers.sample = (data, callback) => {
+  callback(200, {'name' : 'sample handler'});
+};
+
+handlers.notFound = (data, callback) => {
+  callback(404);
+};
+
+const router = {
+  'sample': handlers.sample
+}
